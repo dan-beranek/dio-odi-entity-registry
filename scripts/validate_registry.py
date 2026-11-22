@@ -14,7 +14,7 @@ from jsonschema import Draft202012Validator, FormatChecker
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY_PATH = ROOT / "entities.json"
 SCHEMA_PATH = ROOT / "schemas" / "entity-registry.schema.json"
-VERSION_PATTERN = re.compile(r"^\\d+\\.\\d+\\.\\d+$")
+VERSION_PATTERN = re.compile(r"^\d+\.\d+\.\d+$")
 
 EXPECTED_ENTITIES = {
     "person-daniel-beranek": {
