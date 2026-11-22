@@ -3,7 +3,7 @@
   "registry_id": "https://github.com/dan-beranek/dio-odi-entity-registry",
   "schema_version": "1.0.0",
   "registry_version": "0.1.0",
-  "status": "draft",
+  "status": "canonical-approved",
   "created": "2026-11-22",
   "updated": "2026-11-22",
   "scope": "Shared identity records for public entities reused across Daniel Beránek's web, research and software projects.",
@@ -155,7 +155,7 @@
       "@type": [
         "https://schema.org/SoftwareApplication"
       ],
-      "name": "DIO/ODI MCP service software",
+      "name": "DIO/ODI MCP",
       "url": "https://mcp.danielberanek.cz/",
       "status": "active",
       "source_records": [
