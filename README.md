@@ -60,9 +60,9 @@ python -m pip install -r requirements.txt
 python scripts/validate_registry.py
 ```
 
-GitHub Actions runs the same validation on pushes and pull requests.
+GitHub Actions validates the JSON Schema and identity invariants on pushes and pull requests. It also checks every registered consumer repository against the approved immutable release.
 
-Validation checks the JSON Schema, unique record keys and entity identifiers, URI syntax, duplicate `sameAs` values, deprecation references, and the canonical Person identity invariant.
+Validation checks the JSON Schema, unique record keys and entity identifiers, URI syntax, duplicate `sameAs` values, deprecation references, and the canonical Person identity invariant. The cross-repository checker verifies that every consumer's lock file pins the approved version and commit and that its vendored snapshot is byte-identical to the immutable source.
 
 ## Versioning and change control
 
@@ -85,10 +85,13 @@ The repository is public, but no reuse licence is declared yet. Public visibilit
 ```text
 .
 ├── entities.json
+├── metadata/
+│   └── consumers.json
 ├── schemas/
 │   └── entity-registry.schema.json
 ├── scripts/
-│   └── validate_registry.py
+│   ├── validate_registry.py
+│   └── validate_consumers.py
 ├── .github/
 │   └── workflows/
 │       └── validate.yml
