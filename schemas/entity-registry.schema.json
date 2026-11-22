@@ -1,0 +1,227 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dan-beranek/dio-odi-entity-registry/blob/main/schemas/entity-registry.schema.json",
+  "title": "DIO/ODI Entity Registry",
+  "description": "Schema for the versioned registry of shared public entity identities.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "registry_id",
+    "schema_version",
+    "registry_version",
+    "status",
+    "created",
+    "updated",
+    "scope",
+    "authority_boundaries",
+    "entities"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "const": "./schemas/entity-registry.schema.json"
+    },
+    "registry_id": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://"
+    },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "registry_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "canonical-approved"
+      ]
+    },
+    "created": {
+      "type": "string",
+      "format": "date"
+    },
+    "updated": {
+      "type": "string",
+      "format": "date"
+    },
+    "scope": {
+      "type": "string",
+      "minLength": 20
+    },
+    "authority_boundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "entity_identity",
+        "page_graph_semantics",
+        "canonical_vocabulary",
+        "publication_metadata",
+        "keyword_metadata"
+      ],
+      "properties": {
+        "entity_identity": {
+          "type": "string",
+          "minLength": 20
+        },
+        "page_graph_semantics": {
+          "type": "string",
+          "minLength": 20
+        },
+        "canonical_vocabulary": {
+          "type": "string",
+          "minLength": 20
+        },
+        "publication_metadata": {
+          "type": "string",
+          "minLength": 20
+        },
+        "keyword_metadata": {
+          "type": "string",
+          "minLength": 20
+        }
+      }
+    },
+    "entities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/entity"
+      }
+    }
+  },
+  "$defs": {
+    "sourceRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "path",
+        "role"
+      ],
+      "properties": {
+        "repository": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[^/].*$"
+        },
+        "role": {
+          "type": "string",
+          "minLength": 8
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "entity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "key",
+        "@id",
+        "@type",
+        "name",
+        "url",
+        "status",
+        "source_records"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "@id": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "@type": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://"
+          }
+        },
+        "name": {
+          "type": "string",
+          "minLength": 2
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "sameAs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://"
+          }
+        },
+        "endpoint_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "landing_page": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "deprecated"
+          ]
+        },
+        "replaced_by": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "source_records": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/sourceRecord"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "deprecated"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "replaced_by"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
