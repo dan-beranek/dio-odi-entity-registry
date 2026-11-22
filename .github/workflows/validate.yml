@@ -29,3 +29,5 @@ jobs:
         run: python -m pip install -r requirements.txt
       - name: Validate registry
         run: python scripts/validate_registry.py
+      - name: Validate pinned consumer snapshots
+        run: python scripts/validate_consumers.py
