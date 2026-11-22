@@ -7,7 +7,7 @@ The registry is deliberately separate from the sites that consume it. It stores 
 ## Current state
 
 - Registry version: `0.1.0`
-- Registry status: `draft` — initial records are assembled from the currently published project graphs and must be reviewed before consumers adopt this registry as their canonical build input.
+- Registry status: `canonical-approved` — the seven initial shared identity records have been reconciled against the currently published project graphs. Adoption by each consuming build remains staged and version-pinned.
 - Data file: [`entities.json`](./entities.json)
 - JSON Schema: [`schemas/entity-registry.schema.json`](./schemas/entity-registry.schema.json)
 - Validation: [`scripts/validate_registry.py`](./scripts/validate_registry.py)
@@ -47,7 +47,9 @@ The mutable discovery URL is:
 https://raw.githubusercontent.com/dan-beranek/dio-odi-entity-registry/main/entities.json
 ```
 
-Use the `main` URL for discovery and development only. Production builds should pin an immutable Git commit or a version tag (for example, `v0.1.0` once that release is approved and tagged) and record the resolved commit SHA in their build metadata. Do not silently consume the moving `main` branch in reproducible production builds.
+Use the `main` URL for discovery and development only. Production builds must pin an immutable Git commit SHA and record it in their build metadata. A release tag such as `v0.1.0` is a convenient human-readable alias, but the commit SHA remains the reproducibility anchor. Do not silently consume the moving `main` branch in production builds.
+
+For a consumer, the preferred pattern is to vendor an exact snapshot from the pinned commit, verify that snapshot against the same immutable upstream commit in CI, and project only the required entity fields into the consumer's own graph. A snapshot is a build input, not a second authority.
 
 ## Validation
 
@@ -72,7 +74,7 @@ The registry follows Semantic Versioning:
 
 Entity `@id` values are persistent identifiers. Do not casually rename, recycle or repurpose them. If an entity is superseded, retain its old record as deprecated and provide `replaced_by`; do not silently delete or reassign its identifier.
 
-A release is complete only when the registry validates, its version is updated, the change is reviewed, and an immutable Git tag is created. Consumers should upgrade their pinned version deliberately.
+A registry revision is eligible for production consumption only when the schema and identity invariants pass, the version is recorded, the change is reviewed, and the consuming project pins the immutable commit SHA. Git tags may be added as human-readable release aliases; they are not a substitute for immutable commit pins. Consumers should upgrade their pinned revision deliberately.
 
 ## Licensing
 
