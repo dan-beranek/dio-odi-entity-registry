@@ -1,0 +1,30 @@
+name: Cross-repository consumer integrity
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 4 * * *"
+  push:
+    branches: [main]
+    paths:
+      - "entities.json"
+      - "metadata/consumers.json"
+      - "scripts/validate_consumers.py"
+      - ".github/workflows/consumer-integrity.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate-consumers:
+    name: Verify immutable consumer pins and snapshots
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Entity Registry
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate consumer repositories
+        run: python scripts/validate_consumers.py
